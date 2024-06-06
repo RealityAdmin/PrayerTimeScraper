@@ -13,7 +13,6 @@ class PrayerTimeScraper:
     def scrape_times(self):
 
         res = requests.get(self._website_url)
-        print(self._website_url)
 
         if res.status_code != 200:
             return {}
@@ -26,4 +25,4 @@ class PrayerTimeScraper:
         adhan_categories = ['Fajr', 'Sunrise', 'Zuhr', 'Asr', 'Maghrib', 'Isha']
         for i in range(0, 6):
             adhan_times[adhan_categories[i]] = times[i].text
-        return {adhan_times}
+        return adhan_times
