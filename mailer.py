@@ -1,4 +1,6 @@
 import smtplib, ssl
+from email.message import EmailMessage
+import datetime
 
 PORT = 465
 
@@ -7,9 +9,16 @@ class Mailer:
         self.sender_email = sender_email
         self.receiver_email = receiver_email
 
-    def send_email(self, message, password):
+    def send_email(self, content, password):
+        message = EmailMessage()
+        message.set_content(content)
+        message['Subject'] = f'Prayer Times for {datetime.date.today()}'
+        message['From'] = self.sender_email
+        message['To'] = self.receiver_email
+
+
         context = ssl.create_default_context()
 
         with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
             server.login(self.sender_email, password)
-            server.sendmail(self.sender_email, self.receiver_email, message)
+            server.send_message(message)
