@@ -12,4 +12,4 @@ class Mailer:
 
         with smtplib.SMTP_SSL("smtp.gmail.com", PORT, context=context) as server:
             server.login(self.sender_email, password)
-            server.sendmail(self.send_email, self.receiver_email, message)
+            server.sendmail(self.sender_email, self.receiver_email, message)
