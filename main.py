@@ -12,10 +12,26 @@ if __name__ == '__main__':
 
     scraper = PrayerTimeScraper('ICCM')
     mailer = Mailer(os.getenv('BOT_EMAIL'), os.getenv('MY_EMAIL'))
-    mailer.send_email('Test', os.getenv('APP_PASS'))
+    
     while True:
+        now = datetime.datetime.now()
+        today7am = now.replace(hour=7, minute=0, second=0, microsecond=0)
+        if now > today7am:
+            pause.until(datetime.datetime.today() + datetime.timedelta(days=1))
+        else:
+            pause.until(today7am)
         times = {}
         while not times:
+            # pause.seconds(2)
             times = scraper.scrape_times()
-            print(times)
-        pause.seconds(5)
+            message = f'''The prayer times for {datetime.date.today()} are:
+            
+            Fajr: {times['Fajr']} 
+            Sunrise: {times['Sunrise']}
+            Zuhr: {times['Zuhr']}
+            Asr: {times['Asr']}
+            Maghrib: {times['Maghrib']}
+            Isha: {times['Isha']}
+'''
+            print(message)
+            mailer.send_email(message, os.getenv('APP_PASS'))
