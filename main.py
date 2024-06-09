@@ -3,6 +3,7 @@ import sys
 import pause
 import datetime
 import os
+import json
 from dotenv import load_dotenv, dotenv_values 
 from mailer import Mailer
 
@@ -11,7 +12,15 @@ if __name__ == '__main__':
     load_dotenv()
 
     scraper = PrayerTimeScraper('ICCM')
-    mailer = Mailer(os.getenv('BOT_EMAIL'), os.getenv('MY_EMAIL'))
+    mailer = Mailer(os.getenv('BOT_EMAIL'))
+    settings = {}
+    with open('settings.json') as f:
+        settings = json.load(f)
+    if len(settings) < 1:
+        print("ERROR: Could not read settings.json")
+        exit(1)
+    all_emails = settings["emails"]
+    print(all_emails)
     
     while True:
         now = datetime.datetime.now()
@@ -34,4 +43,5 @@ if __name__ == '__main__':
             Isha: {times['Isha']}
 '''
             print(message)
-            mailer.send_email(message, os.getenv('APP_PASS'))
+            for email in all_emails:
+                mailer.send_email(message, email, os.getenv('APP_PASS'))
